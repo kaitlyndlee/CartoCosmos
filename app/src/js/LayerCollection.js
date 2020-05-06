@@ -1,4 +1,5 @@
 import L from "leaflet";
+import { VECTOR_TEST } from "./vector";
 
 /**
  * @class LayerCollection
@@ -72,6 +73,31 @@ export default L.LayerCollection = L.Class.extend({
       let name = String(layer["displayname"]);
       this._overlays[name] = overlay;
     }
+
+    let vectorGrid = L.vectorGrid.slicer(VECTOR_TEST, {
+      vectorTileLayerStyles: {
+        sliced: function(properties, zoom) {
+          return {
+            fillColor: "yellow",
+            fillOpacity: 0.5,
+            //fillOpacity: 1,
+            stroke: true,
+            fill: true,
+            color: "yellow",
+            //opacity: 0.2,
+            weight: 0,
+            radius: 3
+          };
+        }
+      },
+      interactive: false,
+      getFeatureId: function(f) {
+        return f.properties["clean_feature"];
+      }
+    });
+
+    this._overlays["Vector"] = vectorGrid;
+
     // Adds WFS feature names to map.
     // Commented out for now.
     // if (this._projName == "cylindrical") {
