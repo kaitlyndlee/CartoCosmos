@@ -1,5 +1,5 @@
 import L from "leaflet";
-import { VECTOR_TEST } from "./vector";
+import "leaflet.vectorgrid";
 
 /**
  * @class LayerCollection
@@ -74,26 +74,49 @@ export default L.LayerCollection = L.Class.extend({
       this._overlays[name] = overlay;
     }
 
-    let vectorGrid = L.vectorGrid.slicer(VECTOR_TEST, {
-      vectorTileLayerStyles: {
-        sliced: function(properties, zoom) {
-          return {
-            fillColor: "yellow",
-            fillOpacity: 0.5,
-            //fillOpacity: 1,
-            stroke: true,
+    let vectorGrid = L.vectorGrid.protobuf(
+      "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/vectortiles:sp@EPSG%3A4326@pbf/{z}/{x}/{-y}.pbf",
+      {
+        interactive: true,
+        vectorTileLayerStyles: {
+          sp: {
+            weight: 1,
+            fillColor: "red",
+            color: "red",
+            opacity: 1,
+            fillOpacity: 1,
             fill: true,
-            color: "yellow",
-            //opacity: 0.2,
-            weight: 0,
             radius: 3
-          };
+          }
+        },
+        maxNativeZoom: 8,
+        getFeatureId: function(feature) {
+          feature.properties.id = feature.id;
+          return feature.properties.id;
         }
-      },
-      interactive: false,
-      getFeatureId: function(f) {
-        return f.properties["clean_feature"];
       }
+    );
+
+    let selectedFeature = null;
+    let clearSelected = function() {
+      if (selectedFeature) {
+        vectorGrid.resetFeatureStyle(selectedFeature);
+      }
+      selectedFeature = null;
+    };
+
+    vectorGrid.on("click", function(e) {
+      clearSelected();
+      selectedFeature = e.layer.properties.id;
+      vectorGrid.setFeatureStyle(selectedFeature, {
+        weight: 1,
+        fillColor: "yellow",
+        color: "yellow",
+        opacity: 1,
+        fillOpacity: 1,
+        fill: true,
+        radius: 3
+      });
     });
 
     this._overlays["Vector"] = vectorGrid;
