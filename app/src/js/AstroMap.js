@@ -21,9 +21,7 @@ import { MY_JSON_MAPS } from "./layers";
  * L.Map.AstroMap("map", "Mars", {});
  *
  * @param {String} mapDiv - ID of the div for the map.
- *
  * @param {String} target - Name of target to display layers for.
- *
  * @param {Object} options - Options for the map.
  */
 export default L.Map.AstroMap = L.Map.extend({
@@ -57,7 +55,11 @@ export default L.Map.AstroMap = L.Map.extend({
 
     // Could not work with _
     this.layers = {
-      cylindrical: new LayerCollection("cylindrical", cylLayerInfo)
+      cylindrical: new LayerCollection(
+        this._target,
+        "cylindrical",
+        cylLayerInfo
+      )
     };
 
     let northLayerInfo = this.parseJSON("north-polar stereographic");
@@ -66,6 +68,7 @@ export default L.Map.AstroMap = L.Map.extend({
     } else {
       this._hasNorthPolar = true;
       this.layers["northPolar"] = new LayerCollection(
+        this._target,
         "north-polar stereographic",
         northLayerInfo
       );
@@ -77,6 +80,7 @@ export default L.Map.AstroMap = L.Map.extend({
     } else {
       this._hasSouthPolar = true;
       this.layers["southPolar"] = new LayerCollection(
+        this._target,
         "south-polar stereographic",
         southLayerInfo
       );
@@ -193,8 +197,6 @@ export default L.Map.AstroMap = L.Map.extend({
     // weird flashing transition.
     this.setView(center, 1, true);
     this.loadLayerCollection(name);
-
-    // this.fire("projChange", { proj: this._currentProj });
   },
 
   /**

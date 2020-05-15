@@ -1,5 +1,5 @@
 import L from "leaflet";
-import "leaflet.vectorgrid";
+import AstroVectorGrid from "./AstroVectorGrid";
 
 /**
  * @class LayerCollection
@@ -14,10 +14,12 @@ export default L.LayerCollection = L.Class.extend({
   /**
    * @function LayerCollection.prototype.initialize
    * @description Constructor that creates the layers.
-   * @param {String} target Name of the target.
-   * @param {String} projName Name of the projection.
+   * @param {String} target - Name of the target.
+   * @param {String} projName - Name of the projection.
+   * @param {Object} layerInfo - JSON object containing information needed to create layers.
    */
-  initialize: function(projName, layerInfo) {
+  initialize: function(target, projName, layerInfo) {
+    this._target = target;
     this._projName = projName;
     this._baseLayers = {};
     this._overlays = {};
@@ -35,7 +37,7 @@ export default L.LayerCollection = L.Class.extend({
   /**
    * @function LayerCollection.prototype.createBaseLayers
    * @description Creates WMS layers and adds them to the list of base layers.
-   * @param  {List} layers - List of base layer information.
+   * @param {List} layers - List of base layer information.
    */
   createBaseLayers: function(layers) {
     for (let i = 0; i < layers.length; i++) {
@@ -74,52 +76,15 @@ export default L.LayerCollection = L.Class.extend({
       this._overlays[name] = overlay;
     }
 
-    let vectorGrid = L.vectorGrid.protobuf(
-      "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/vectortiles:sp@EPSG%3A4326@pbf/{z}/{x}/{-y}.pbf",
-      {
-        interactive: true,
-        vectorTileLayerStyles: {
-          sp: {
-            weight: 1,
-            fillColor: "red",
-            color: "red",
-            opacity: 1,
-            fillOpacity: 1,
-            fill: true,
-            radius: 3
-          }
-        },
-        maxNativeZoom: 8,
-        getFeatureId: function(feature) {
-          feature.properties.id = feature.id;
-          return feature.properties.id;
-        }
-      }
-    );
-
-    let selectedFeature = null;
-    let clearSelected = function() {
-      if (selectedFeature) {
-        vectorGrid.resetFeatureStyle(selectedFeature);
-      }
-      selectedFeature = null;
-    };
-
-    vectorGrid.on("click", function(e) {
-      clearSelected();
-      selectedFeature = e.layer.properties.id;
-      vectorGrid.setFeatureStyle(selectedFeature, {
-        weight: 1,
-        fillColor: "yellow",
-        color: "yellow",
-        opacity: 1,
-        fillOpacity: 1,
-        fill: true,
-        radius: 3
-      });
-    });
-
-    this._overlays["Vector"] = vectorGrid;
+    if (
+      this._projName === "cylindrical" &&
+      this._target.toLowerCase() === "moon"
+    ) {
+      this._overlays["Vector"] = new AstroVectorGrid(
+        "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/vectortiles:sp@EPSG%3A4326@pbf/{z}/{x}/{-y}.pbf",
+        {}
+      );
+    }
 
     // Adds WFS feature names to map.
     // Commented out for now.

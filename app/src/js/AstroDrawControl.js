@@ -69,9 +69,18 @@ export default L.Control.AstroDrawControl = L.Control.Draw.extend({
 
     map.on("draw:created", this.shapesToWKT, this);
 
-    // map.on("projChange", this.reprojectFeature, this);
+    map.on("clearShape", this.clearShapes, this);
 
     return container;
+  },
+
+  /**
+   * @function AstroDrawControl.prototype.clearShapes
+   * @description Removes shapes that are currently on the map.
+   */
+  clearShapes: function() {
+    this.myLayer.clearLayers();
+    this.options.edit["featureGroup"].clearLayers();
   },
 
   /**
@@ -82,8 +91,7 @@ export default L.Control.AstroDrawControl = L.Control.Draw.extend({
    * @param  {DomEvent} e  - On draw.
    */
   shapesToWKT: function(e) {
-    this.myLayer.clearLayers();
-    this.options.edit["featureGroup"].clearLayers();
+    this.clearShapes();
 
     this.options.edit["featureGroup"].addLayer(e.layer);
     let geoJson = e.layer.toGeoJSON();
@@ -101,11 +109,9 @@ export default L.Control.AstroDrawControl = L.Control.Draw.extend({
    * @param  {DomEvent} e  - On Click of Well-Known text button.
    */
   mapWKTString: function(e) {
-    this.myLayer.clearLayers();
-    this.options.edit["featureGroup"].clearLayers();
+    this.clearShapes();
 
     let wktValue = this.wktTextBox.value;
-
     try {
       this.wkt.read(wktValue);
     } catch (err) {
@@ -122,8 +128,4 @@ export default L.Control.AstroDrawControl = L.Control.Draw.extend({
 
     this.myLayer.addData(geojsonFeature);
   }
-
-  // reprojectFeature: function(e) {
-
-  // }
 });
