@@ -16,8 +16,9 @@ import "leaflet.vectorgrid";
 export default L.AstroVectorGrid = L.VectorGrid.Protobuf.extend({
   options: {
     interactive: true,
+    rendererFactory: L.canvas.tile,
     vectorTileLayerStyles: {
-      sp: {
+      points_test2: {
         weight: 1,
         fillColor: "red",
         color: "red",
@@ -150,7 +151,7 @@ export default L.AstroVectorGrid = L.VectorGrid.Protobuf.extend({
 
   /**
    * @function AstroVectorGrid.prototype.geometryToLatLon
-   * @description Since the (x, y) coordinates associated with wach point are relative to the tile
+   * @description Since the (x, y) coordinates associated with each point are relative to the tile
    *              it is in, convert the coordinates so they are relative to the map image and
    *              then unproject the image point to lat and lon values.
    *

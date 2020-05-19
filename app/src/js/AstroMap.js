@@ -27,7 +27,7 @@ import { MY_JSON_MAPS } from "./layers";
 export default L.Map.AstroMap = L.Map.extend({
   options: {
     center: [0, 0],
-    zoom: 1,
+    zoom: 0,
     maxZoom: 8,
     attributionControl: false,
     zoomControl: false

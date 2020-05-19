@@ -37,7 +37,7 @@ const useStyles = makeStyles(theme => ({
  */
 export default function App() {
   const classes = useStyles();
-  const [targetPlanet, setTargetPlanet] = React.useState("Mercury");
+  const [targetPlanet, setTargetPlanet] = React.useState("Moon");
 
   /**
    * Handles target selection
@@ -59,7 +59,7 @@ export default function App() {
             value={targetPlanet}
             input={<Input id="grouped-select" />}
           >
-            <ListSubheader value="Mercury">Planets</ListSubheader>
+            <ListSubheader value="Moon">Planets</ListSubheader>
             <MenuItem value="Mercury">Mercury</MenuItem>
             <MenuItem value="Venus">Venus</MenuItem>
             <MenuItem value="Earth">Earth</MenuItem>
