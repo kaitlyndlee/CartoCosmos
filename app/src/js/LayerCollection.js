@@ -81,37 +81,37 @@ export default L.LayerCollection = L.Class.extend({
       this._projName === "cylindrical" &&
       this._target.toLowerCase() === "moon"
     ) {
-      // this._overlays["Vector"] = new AstroVectorGrid(
-      //   "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/realdata:points_test2@EPSG%3A4326@pbf/{z}/{x}/{-y}.pbf",
-      //   {}
-      // );
-      var simple = {
-        version: 8,
-        sources: {
-          test_vector: {
-            type: "vector",
-            scheme: "tms",
-            tiles: [
-              "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/realdata:points_test2@EPSG%3A4326@pbf/{z}/{x}/{y}.pbf"
-            ]
-            //"tiles": ["http://TegolaServerHost:8082/maps/zoning/{z}/{x}/{y}.vector.pbf"]
-          }
-        },
-        layers: [
-          {
-            id: "points_test2",
-            type: "circle",
-            source: "test_vector",
-            "source-layer": "points_test2",
-            paint: {
-              "circle-color": "red"
-            }
-          }
-        ]
-      };
-      let gl = new L.mapboxGL({ style: simple });
-      this._overlays["test"] = gl;
-      console.log(gl.getMapboxMap());
+      this._overlays["Vector"] = new AstroVectorGrid(
+        "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/realdata:points_test2@EPSG%3A4326@pbf/{z}/{x}/{-y}.pbf",
+        {}
+      );
+      // var simple = {
+      //   version: 8,
+      //   sources: {
+      //     test_vector: {
+      //       type: "vector",
+      //       scheme: "tms",
+      //       tiles: [
+      //         "http://localhost:8080/geoserver/gwc/service/tms/1.0.0/realdata:points_test2@EPSG%3A4326@pbf/{z}/{x}/{y}.pbf"
+      //       ]
+      //       //"tiles": ["http://TegolaServerHost:8082/maps/zoning/{z}/{x}/{y}.vector.pbf"]
+      //     }
+      //   },
+      //   layers: [
+      //     {
+      //       id: "points_test2",
+      //       type: "circle",
+      //       source: "test_vector",
+      //       "source-layer": "points_test2",
+      //       paint: {
+      //         "circle-color": "red"
+      //       }
+      //     }
+      //   ]
+      // };
+      // let gl = new L.mapboxGL({ style: simple });
+      // this._overlays["test"] = gl;
+      // console.log(gl.getMapboxMap());
     }
 
     // Adds WFS feature names to map.

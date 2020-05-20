@@ -1,5 +1,5 @@
 import L from "leaflet";
-import "leaflet.vectorgrid";
+import Protobuf from "./Leaflet.VectorGrid.bundled.min.js";
 
 /**
  * @class AstroVectorGrid
