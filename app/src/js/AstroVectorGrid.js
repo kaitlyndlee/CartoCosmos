@@ -159,7 +159,7 @@ export default L.AstroVectorGrid = L.VectorGrid.Protobuf.extend({
 
   /**
    * @function AstroVectorGrid.prototype.selectedToCSV
-   * @description Returns a list of selected features
+   * @description Download selected points to a .csv file.
    *
    */
   selectedToCSV: function(event) {
