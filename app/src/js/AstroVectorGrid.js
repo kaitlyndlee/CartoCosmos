@@ -16,7 +16,6 @@ import Protobuf from "./Leaflet.VectorGrid.bundled.min.js";
 export default L.AstroVectorGrid = L.VectorGrid.Protobuf.extend({
   options: {
     interactive: true,
-    selected: false,
     rendererFactory: L.canvas.tile,
     vectorTileLayerStyles: {
       points_test2: {
