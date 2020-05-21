@@ -16,6 +16,7 @@ import Protobuf from "./Leaflet.VectorGrid.bundled.min.js";
 export default L.AstroVectorGrid = L.VectorGrid.Protobuf.extend({
   options: {
     interactive: true,
+    selected: false,
     rendererFactory: L.canvas.tile,
     vectorTileLayerStyles: {
       points_test2: {
@@ -56,6 +57,13 @@ export default L.AstroVectorGrid = L.VectorGrid.Protobuf.extend({
     });
     map.on(L.Draw.Event.CREATED, this.selectFeatures, this);
 
+    // somehow "this" is lost with nested binding of event handlers
+    let vectorGrid = this;
+
+    // Whenever a new poly is created, bind an event handler to it.
+    map.on("draw:created", function(e) {
+      e.layer.on("click", vectorGrid.selectedToCSV, vectorGrid)
+    });
     L.VectorGrid.Protobuf.prototype.onAdd.call(this, map);
   },
 
@@ -146,7 +154,40 @@ export default L.AstroVectorGrid = L.VectorGrid.Protobuf.extend({
       }
     }
     this.changeSelectedStyle(highlightedFeatures);
+    this._selectedFeatures=highlightedFeatures;
     console.log(highlightedFeatures);
+  },
+
+  /**
+   * @function AstroVectorGrid.prototype.selectedToCSV
+   * @description Returns a list of selected features
+   *
+   */
+  selectedToCSV: function(event) {
+    let tile;
+    let features;
+    let fullFeatures = [];
+
+    for (let tileKey in this._vectorTiles) {
+      tile = this._vectorTiles[tileKey];
+      features = tile._features;
+
+      for (const featureID of this._selectedFeatures) {
+        let selectedFeature = features[featureID];
+        if (typeof selectedFeature !== "undefined") {
+          fullFeatures.push([selectedFeature.feature.properties.id,
+                             selectedFeature.feature.properties.sourcefile,
+                             selectedFeature.feature._point.x,
+                             selectedFeature.feature._point.y
+                           ]);
+        }
+      }
+    }
+    let csvContent = "data:text/csv;charset=utf-8,"
+      + fullFeatures.map(e => e.join(",")).join("\n");
+
+    var encodedUri = encodeURI(csvContent);
+    window.open(encodedUri);
   },
 
   /**
