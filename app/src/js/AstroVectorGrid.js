@@ -183,6 +183,10 @@ export default L.AstroVectorGrid = L.VectorGrid.Protobuf.extend({
         }
       }
     }
+    // Don't send out an empty .csv
+    if (fullFeatures.length == 0) {
+      return;
+    }
     let csvContent = "data:text/csv;charset=utf-8,"
       + fullFeatures.map(e => e.join(",")).join("\n");
 
