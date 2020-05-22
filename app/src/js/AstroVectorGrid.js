@@ -146,7 +146,45 @@ export default L.AstroVectorGrid = L.VectorGrid.Protobuf.extend({
       }
     }
     this.changeSelectedStyle(highlightedFeatures);
+    this._selectedFeatures=highlightedFeatures;
+    event.layer.on("click", this.selectedToCSV, this)
     console.log(highlightedFeatures);
+  },
+
+  /**
+   * @function AstroVectorGrid.prototype.selectedToCSV
+   * @description Download selected points to a .csv file.
+   *
+   */
+  selectedToCSV: function(event) {
+    let tile;
+    let features;
+    let fullFeatures = [];
+
+    for (let tileKey in this._vectorTiles) {
+      tile = this._vectorTiles[tileKey];
+      features = tile._features;
+
+      for (const featureID of this._selectedFeatures) {
+        let selectedFeature = features[featureID];
+        if (typeof selectedFeature !== "undefined") {
+          fullFeatures.push([selectedFeature.feature.properties.id,
+                             selectedFeature.feature.properties.sourcefile,
+                             selectedFeature.feature._point.x,
+                             selectedFeature.feature._point.y
+                           ]);
+        }
+      }
+    }
+    // Don't send out an empty .csv
+    if (fullFeatures.length == 0) {
+      return;
+    }
+    let csvContent = "data:text/csv;charset=utf-8,"
+      + fullFeatures.map(e => e.join(",")).join("\n");
+
+    var encodedUri = encodeURI(csvContent);
+    window.open(encodedUri);
   },
 
   /**
