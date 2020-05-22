@@ -56,13 +56,6 @@ export default L.AstroVectorGrid = L.VectorGrid.Protobuf.extend({
     });
     map.on(L.Draw.Event.CREATED, this.selectFeatures, this);
 
-    // somehow "this" is lost with nested binding of event handlers
-    let vectorGrid = this;
-
-    // Whenever a new poly is created, bind an event handler to it.
-    map.on("draw:created", function(e) {
-      e.layer.on("click", vectorGrid.selectedToCSV, vectorGrid)
-    });
     L.VectorGrid.Protobuf.prototype.onAdd.call(this, map);
   },
 
@@ -154,6 +147,7 @@ export default L.AstroVectorGrid = L.VectorGrid.Protobuf.extend({
     }
     this.changeSelectedStyle(highlightedFeatures);
     this._selectedFeatures=highlightedFeatures;
+    event.layer.on("click", this.selectedToCSV, this)
     console.log(highlightedFeatures);
   },
 
